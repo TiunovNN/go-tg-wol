@@ -1,6 +1,12 @@
 # go-tg-wol
 Telegram Bot for wake on lan
 
+# Compile
+
+```
+go build cmd/bot.go
+```
+
 # Run
 The file `config.json` must be created near executable file.
 
