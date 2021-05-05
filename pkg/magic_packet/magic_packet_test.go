@@ -1,16 +1,14 @@
-package magic_packet_test
+package magic_packet
 
 import (
 	"bytes"
 	"encoding/hex"
 	"testing"
-
-	"github.com/TiunovNN/go-tg-wol/pkg/magic_packet"
 )
 
 func TestValidMacAddress(t *testing.T) {
 	mac := "01:02:03:04:05:06"
-	result, err := magic_packet.Create(mac)
+	result, err := Create(mac)
 	if err != nil {
 		t.Fatalf("Error occured %v", err)
 	}
