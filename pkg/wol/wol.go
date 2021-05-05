@@ -13,6 +13,7 @@ func Send(mac string) error {
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
 	message, err := magic_packet.Create(mac)
 	if err != nil {
 		return err
