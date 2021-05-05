@@ -57,11 +57,11 @@ func (s *ChatStorage) GetChat(chatId int64) *ChatEntity {
 func (e *ChatEntity) ProcessMessage(command *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
 	switch e.state {
 	case newUser:
-		if command.Contact != nil {
+		if command.Contact != nil && command.Contact.UserID == command.From.ID {
 			message, err := e.Register(command.Contact.PhoneNumber)
 			return message, err
 		} else {
-			message := tgbotapi.NewMessage(e.id, "Please, introduce yourselves!")
+			message := tgbotapi.NewMessage(e.id, "Please, introduce yourself!")
 			message.ReplyMarkup = makeRegisterMenu()
 			return &message, nil
 		}
@@ -71,7 +71,7 @@ func (e *ChatEntity) ProcessMessage(command *tgbotapi.Message) (*tgbotapi.Messag
 		} else if command.Text == "Sign out" {
 			e.user = nil
 			e.state = newUser
-			message := tgbotapi.NewMessage(e.id, "Please, introduce yourselves!")
+			message := tgbotapi.NewMessage(e.id, "Please, introduce yourself!")
 			message.ReplyMarkup = makeRegisterMenu()
 			return &message, nil
 		} else {
@@ -86,6 +86,9 @@ func (e *ChatEntity) ProcessMessage(command *tgbotapi.Message) (*tgbotapi.Messag
 func (e *ChatEntity) Register(phoneNumber string) (*tgbotapi.MessageConfig, error) {
 	if e.state != newUser {
 		return nil, ErrWrongOperation
+	}
+	if phoneNumber[0] != '+' {
+		phoneNumber = "+" + phoneNumber
 	}
 	user, err := e.userStorage.GetUser(phoneNumber)
 	if err != nil {
