@@ -1,14 +1,16 @@
-package main
+package magic_packet_test
 
 import (
 	"bytes"
 	"encoding/hex"
 	"testing"
+
+	"github.com/TiunovNN/go-tg-wol/pkg/magic_packet"
 )
 
 func TestValidMacAddress(t *testing.T) {
 	mac := "01:02:03:04:05:06"
-	result, err := Create(mac)
+	result, err := magic_packet.Create(mac)
 	if err != nil {
 		t.Fatalf("Error occured %v", err)
 	}
@@ -31,7 +33,7 @@ func TestValidMacAddress(t *testing.T) {
 		0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
 		0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
 	}
-	if bytes.Equal(result, expectedResult) {
+	if !bytes.Equal(result, expectedResult) {
 		t.Fatalf("Got a wrong result %v", hex.EncodeToString(result))
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/TiunovNN/go-tg-wol/pkg/wol"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
@@ -90,6 +91,7 @@ func (e *ChatEntity) SendWakeOnLan() (*tgbotapi.MessageConfig, error) {
 	if e.state != registeredUser {
 		return nil, ErrWrongOperation
 	}
+	wol.Send(e.user.computerMac)
 	text := fmt.Sprintf("Sending wake on lan to %s!", e.user.computerMac)
 	message := tgbotapi.NewMessage(e.id, text)
 	message.ReplyMarkup = makeMenu()
