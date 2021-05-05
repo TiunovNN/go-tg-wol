@@ -7,11 +7,13 @@ import (
 
 	"github.com/TiunovNN/go-tg-wol/pkg/bot"
 	"github.com/TiunovNN/go-tg-wol/pkg/users"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type Config struct {
-	Token string
-	Users []*users.User
+	Token   string        `json:"token"`
+	Users   []*users.User `json:"users"`
+	LogFile string        `json:"log_file"`
 }
 
 func readConfig() (*Config, error) {
@@ -33,5 +35,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not read config %s", err)
 	}
+	log.SetOutput(&lumberjack.Logger{
+		Filename:   config.LogFile,
+		MaxSize:    50, // megabytes
+		MaxBackups: 3,
+		MaxAge:     7,    //days
+		Compress:   true, // disabled by default
+	})
 	bot.Start(config.Token, config.Users)
 }
