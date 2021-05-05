@@ -3,12 +3,14 @@ package bot
 import (
 	"log"
 
+	"github.com/TiunovNN/go-tg-wol/pkg/users"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func Start(token string) error {
+func Start(token string, userList []*users.User) error {
 	bot, err := tgbotapi.NewBotAPI(token)
-	chatStorage := NewChatStorage()
+	userStorage := users.NewUserStorage(userList)
+	chatStorage := NewChatStorage(userStorage)
 	if err != nil {
 		return err
 	}

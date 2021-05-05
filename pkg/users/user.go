@@ -1,11 +1,19 @@
 package users
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"log"
+)
 
 type User struct {
-	Phone      string
-	MacAddress string
-	Name       string
+	Phone      string `json:"phone"`
+	MacAddress string `json:"mac_address"`
+	Name       string `json:"name"`
+}
+
+func (u *User) String() string {
+	return fmt.Sprintf(`User{Phone="%s", MacAddress=%s, Name=%s}`, u.Phone, u.MacAddress, u.Name)
 }
 
 var ErrUnknownUser = errors.New("unknown user")
@@ -20,6 +28,7 @@ func NewUserStorage(users []*User) *UserStorage {
 	}
 	for _, user := range users {
 		storage.users[user.Phone] = user
+		log.Printf("User: %s", user)
 	}
 	return storage
 }
