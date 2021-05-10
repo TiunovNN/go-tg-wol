@@ -25,3 +25,18 @@ func makeRegisterMenu() *tgbotapi.ReplyKeyboardMarkup {
 	)
 	return &keyboard
 }
+
+func makeMenuForAdmin() *tgbotapi.ReplyKeyboardMarkup {
+	keyboard := makeMenu()
+	row := tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButton("Admin menu"))
+	keyboard.Keyboard = append(keyboard.Keyboard, row)
+	return keyboard
+}
+
+func makeAdminPanel() *tgbotapi.ReplyKeyboardMarkup {
+	keyboard := tgbotapi.NewReplyKeyboard(
+		tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButtonContact("Add user")),
+		tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButtonContact("Delete user")),
+	)
+	return &keyboard
+}

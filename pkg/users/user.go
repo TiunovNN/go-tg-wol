@@ -10,6 +10,7 @@ type User struct {
 	Phone      string `json:"phone"`
 	MacAddress string `json:"mac_address"`
 	Name       string `json:"name"`
+	Role       string `json:"role"`
 }
 
 func (u *User) String() string {
