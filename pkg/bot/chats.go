@@ -10,6 +10,7 @@ type ChatEntity struct {
 	user        *users.User
 	state       *State
 	userStorage *users.UserStorage
+	Data        map[string]interface{}
 }
 
 type ChatStorage struct {
@@ -36,13 +37,18 @@ func (s *ChatStorage) GetChat(chatId int64) *ChatEntity {
 		nil,
 		&state,
 		s.userStorage,
+		make(map[string]interface{}),
 	}
 	s.storage[chatId] = entity
 	return entity
 }
 
-func (e *ChatEntity) ProcessMessage(command *tgbotapi.Message) (*tgbotapi.MessageConfig, error) {
-	return (*e.state).ProcessMessage(e, command)
+func (e *ChatEntity) ProcessMessage(update *tgbotapi.Update) (tgbotapi.Chattable, error) {
+	return (*e.state).OnMessage(e, update)
+}
+
+func (e *ChatEntity) ProcessCallback(update *tgbotapi.Update) (tgbotapi.Chattable, error) {
+	return (*e.state).OnCallback(e, update)
 }
 
 func (e *ChatEntity) UpdateState(state *State) {

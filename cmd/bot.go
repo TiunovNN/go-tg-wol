@@ -35,12 +35,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not read config %s", err)
 	}
-	log.SetOutput(&lumberjack.Logger{
-		Filename:   config.LogFile,
-		MaxSize:    50, // megabytes
-		MaxBackups: 3,
-		MaxAge:     7,    //days
-		Compress:   true, // disabled by default
-	})
+	if config.LogFile != "stdout" {
+		log.Printf("Set logging to file")
+		log.SetOutput(&lumberjack.Logger{
+			Filename:   config.LogFile,
+			MaxSize:    50, // megabytes
+			MaxBackups: 3,
+			MaxAge:     7,    //days
+			Compress:   true, // disabled by default
+		})
+	}
+
 	bot.Start(config.Token, config.Users)
 }

@@ -23,18 +23,30 @@ func Start(token string, userList []*users.User) error {
 		return nil
 	}
 	for update := range updatesChannel {
-		if update.Message == nil {
+		if update.Message != nil {
+			chat := chatStorage.GetChat(update.Message.Chat.ID)
+			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+			msg, err := chat.ProcessMessage(&update)
+			if err != nil {
+				log.Printf("Error %v", err)
+				continue
+			}
+			bot.Send(msg)
 			continue
-		}
-		chat := chatStorage.GetChat(update.Message.Chat.ID)
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-		msg, err := chat.ProcessMessage(update.Message)
-		if err != nil {
-			log.Printf("Error %v", err)
+		} else if update.CallbackQuery != nil {
+			chat := chatStorage.GetChat(update.CallbackQuery.Message.Chat.ID)
+			log.Printf("[%s] %s", update.CallbackQuery.Message.From.UserName, update.CallbackQuery.Message.Text)
+			bot.AnswerCallbackQuery(tgbotapi.NewCallback(update.CallbackQuery.ID, ""))
+			msg, err := chat.ProcessCallback(&update)
+			if err != nil {
+				log.Printf("Error %v", err)
+				continue
+			}
+			bot.Send(msg)
 			continue
+
 		}
-		msg.ReplyToMessageID = update.Message.MessageID
-		bot.Send(msg)
+
 	}
 	return nil
 }
